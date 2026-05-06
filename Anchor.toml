@@ -1,0 +1,17 @@
+[toolchain]
+
+[features]
+resolution = true
+skip-lint = false
+
+[programs.devnet]
+identity = "J1kvJpWWCfjyk2j9jySrbq9Fg8eVu4zqq11jzvVQG6FL"
+
+[provider]
+cluster = "devnet"
+wallet = "~/.config/solana/id.json"
+
+[workspace]
+members = ["programs/identity"]
+
+[hooks]

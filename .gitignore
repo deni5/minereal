@@ -1,0 +1,7 @@
+target/
+.env
+.env.local
+node_modules/
+.DS_Store
+apps/web/.next/
+*.crdownload
