@@ -20,7 +20,7 @@ const secretKey  = JSON.parse(
 const admin = Keypair.fromSecretKey(Uint8Array.from(secretKey))
 
 // Замінити після anchor deploy
-const IDENTITY_PROGRAM_ID = new PublicKey('REPLACE_AFTER_DEPLOY')
+const IDENTITY_PROGRAM_ID = new PublicKey('J1kvJpWWCfjyk2j9jySrbq9Fg8eVu4zqq11jzvVQG6FL')
 
 // ─── HELPERS ─────────────────────────────────────────────────────────────────
 function disc(name) {
