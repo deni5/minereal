@@ -1,7 +1,8 @@
 [workspace]
 members = [
     "programs/identity",
-    "programs/asset_registry"
+    "programs/asset_registry",
+    "programs/marketplace"
 ]
 resolver = "2"
 

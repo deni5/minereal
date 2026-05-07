@@ -7,12 +7,13 @@ skip-lint = false
 [programs.devnet]
 asset_registry = "8ZAN3ucwx8JENTz3i43biwETyYQ3ogo9DEFKhJRz9XU4"
 identity = "9spzg8rip7AUtHo1LVeYykzniwmm8QTbrT1K5JhmcRo4"
+marketplace = "BMGvHfz7P9qVkYLexVtX7c1Vp8VWL6PAG5UrASmdw15u"
 
 [provider]
 cluster = "devnet"
 wallet = "~/.config/solana/id.json"
 
 [workspace]
-members = ["programs/identity", "programs/asset_registry"]
+members = ["programs/identity", "programs/asset_registry", "programs/marketplace"]
 
 [hooks]
