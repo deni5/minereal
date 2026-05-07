@@ -5,3 +5,5 @@ node_modules/
 .DS_Store
 apps/web/.next/
 *.crdownload
+scripts/oracle2.json
+scripts/oracle3.json
