@@ -1,23 +1,29 @@
 'use client'
 import { useEffect, useState } from 'react'
-import { useWallet } from '@solana/wallet-adapter-react'
+import { useWallet, useConnection } from '@solana/wallet-adapter-react'
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
 import { connection, DEMO_ASSET_PDA } from '@/lib/solana'
+import { LAMPORTS_PER_SOL } from '@solana/web3.js'
 import Link from 'next/link'
 
 export default function Home() {
   const { publicKey } = useWallet()
   const [assetData, setAssetData] = useState<any>(null)
+  const [balance, setBalance] = useState<number | null>(null)
 
   useEffect(() => {
     connection.getAccountInfo(DEMO_ASSET_PDA).then(info => {
-      if (info) setAssetData({ exists: true, lamports: info.lamports })
+      if (info) setAssetData({ exists: true })
     })
   }, [])
 
+  useEffect(() => {
+    if (!publicKey) { setBalance(null); return }
+    connection.getBalance(publicKey).then(bal => setBalance(bal / LAMPORTS_PER_SOL))
+  }, [publicKey])
+
   return (
     <main style={{ minHeight: '100vh', fontFamily: 'Inter, sans-serif' }}>
-      {/* NAV */}
       <nav style={{
         background: '#1C2E45', padding: '16px 32px',
         display: 'flex', justifyContent: 'space-between', alignItems: 'center'
@@ -26,22 +32,36 @@ export default function Home() {
           ⬡ MINEREAL
         </div>
         <div style={{ display: 'flex', gap: 24, alignItems: 'center' }}>
-          <Link href="/explore" style={{ color: '#E8EDF2', textDecoration: 'none', fontSize: 14 }}>
-            Explore
-          </Link>
+          <Link href="/explore" style={{ color: '#E8EDF2', textDecoration: 'none', fontSize: 14 }}>Explore</Link>
           {publicKey && (
-            <Link href="/portfolio" style={{ color: '#E8EDF2', textDecoration: 'none', fontSize: 14 }}>
-              Portfolio
-            </Link>
+            <Link href="/portfolio" style={{ color: '#E8EDF2', textDecoration: 'none', fontSize: 14 }}>Portfolio</Link>
           )}
-          <WalletMultiButton style={{ background: '#2A4060', fontSize: 13 }} />
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            {publicKey && balance !== null && (
+              <div style={{
+                background: '#2A4060', borderRadius: 8,
+                padding: '6px 12px', fontSize: 12, color: '#E8EDF2',
+                display: 'flex', flexDirection: 'column', alignItems: 'flex-end'
+              }}>
+                <span style={{ color: '#D4A843', fontWeight: 600 }}>{balance.toFixed(3)} SOL</span>
+                <span style={{ color: '#8AACC8', fontSize: 11 }}>
+                  {publicKey.toBase58().slice(0,4)}...{publicKey.toBase58().slice(-4)}
+                </span>
+              </div>
+            )}
+            <WalletMultiButton style={{
+              background: publicKey ? '#3A6040' : '#2A4060',
+              fontSize: 13, height: 36, borderRadius: 8
+            }} />
+          </div>
         </div>
       </nav>
 
-      {/* HERO */}
       <section style={{
+        padding: '80px 32px', textAlign: 'center', color: '#F7F9FB',
         background: 'linear-gradient(135deg, rgba(28,46,69,0.80) 0%, rgba(42,64,96,0.70) 100%), url(/hero-bg.jpg) center/cover no-repeat',
-        padding: '80px 32px', textAlign: 'center', color: '#F7F9FB'
+        minHeight: '70vh', display: 'flex', flexDirection: 'column',
+        alignItems: 'center', justifyContent: 'center'
       }}>
         <div style={{
           display: 'inline-block', background: '#E6F2EC', color: '#1E5C35',
@@ -60,20 +80,15 @@ export default function Home() {
           <Link href="/explore" style={{
             background: '#D4A843', color: '#1C2E45', padding: '14px 32px',
             borderRadius: 8, textDecoration: 'none', fontWeight: 600, fontSize: 15
-          }}>
-            Explore Projects →
-          </Link>
+          }}>Explore Projects →</Link>
           <Link href="/explore" style={{
             background: 'transparent', color: '#E8EDF2', padding: '14px 32px',
             borderRadius: 8, textDecoration: 'none', fontSize: 15,
             border: '1px solid #4A6080'
-          }}>
-            List Your Asset
-          </Link>
+          }}>List Your Asset</Link>
         </div>
       </section>
 
-      {/* STATS */}
       <section style={{
         background: '#FFFFFF', padding: '40px 32px',
         display: 'flex', justifyContent: 'center', gap: 64, flexWrap: 'wrap'
@@ -91,11 +106,8 @@ export default function Home() {
         ))}
       </section>
 
-      {/* DEMO PROJECT CARD */}
       <section style={{ padding: '60px 32px', maxWidth: 800, margin: '0 auto' }}>
-        <h2 style={{ fontSize: 28, fontWeight: 600, color: '#1C2E45', marginBottom: 24 }}>
-          Featured Project
-        </h2>
+        <h2 style={{ fontSize: 28, fontWeight: 600, color: '#1C2E45', marginBottom: 24 }}>Featured Project</h2>
         <div style={{
           background: '#FFFFFF', borderRadius: 16,
           border: '0.5px solid #E8EDF2', padding: 28,
@@ -103,22 +115,15 @@ export default function Home() {
         }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 20, flexWrap: 'wrap', gap: 12 }}>
             <div>
-              <div style={{ fontSize: 20, fontWeight: 600, color: '#1C2E45' }}>
-                Lithium Deposit — Kirovohrad Oblast
-              </div>
-              <div style={{ fontSize: 13, color: '#4A6080', marginTop: 4 }}>
-                Class B + C &nbsp;·&nbsp; License KVH-2025-LI-0042 &nbsp;·&nbsp; Valid until 2031
-              </div>
+              <div style={{ fontSize: 20, fontWeight: 600, color: '#1C2E45' }}>Lithium Deposit — Kirovohrad Oblast</div>
+              <div style={{ fontSize: 13, color: '#4A6080', marginTop: 4 }}>Class B + C &nbsp;·&nbsp; License KVH-2025-LI-0042 &nbsp;·&nbsp; Valid until 2031</div>
             </div>
             <span style={{
               background: '#E6F2EC', color: '#1E5C35', border: '1px solid #5A9E72',
               borderRadius: 20, padding: '4px 14px', fontSize: 13, fontWeight: 500,
               display: 'flex', alignItems: 'center', gap: 6, height: 'fit-content'
-            }}>
-              ● Green zone
-            </span>
+            }}>● Green zone</span>
           </div>
-
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12, marginBottom: 20 }}>
             {[
               { label: 'Token price', value: '$12.50' },
@@ -132,71 +137,45 @@ export default function Home() {
               </div>
             ))}
           </div>
-
-          {/* War risk */}
-          <div style={{
-            background: '#FAFAE6', border: '1px solid #B8B840',
-            borderRadius: 10, padding: '12px 16px', marginBottom: 20
-          }}>
+          <div style={{ background: '#FAFAE6', border: '1px solid #B8B840', borderRadius: 10, padding: '12px 16px', marginBottom: 20 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ fontSize: 13, fontWeight: 500, color: '#5A5A00' }}>
-                ⚠ War Risk Monitor
-              </span>
+              <span style={{ fontSize: 13, fontWeight: 500, color: '#5A5A00' }}>⚠ War Risk Monitor</span>
               <span style={{ fontSize: 13, color: '#5A5A00' }}>Yellow zone · 147 km</span>
             </div>
             <div style={{ background: '#F0F0C0', borderRadius: 3, height: 6, marginTop: 8 }}>
               <div style={{ width: '63%', background: '#B8B840', height: 6, borderRadius: 3 }} />
             </div>
-            <div style={{ fontSize: 11, color: '#7A7A20', marginTop: 4 }}>
-              Insurance active · Trading continues
-            </div>
+            <div style={{ fontSize: 11, color: '#7A7A20', marginTop: 4 }}>Insurance active · Trading continues</div>
           </div>
-
-          {/* Oracle verification */}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
             <span style={{ fontSize: 13, color: '#4A6080' }}>Oracle verifications</span>
             <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
-              {[1,2,3].map(i => (
-                <div key={i} style={{ width: 12, height: 12, borderRadius: '50%', background: '#3A7A52' }} />
-              ))}
-              {[4,5].map(i => (
-                <div key={i} style={{ width: 12, height: 12, borderRadius: '50%', background: '#E8EDF2', border: '1px solid #C8D4DE' }} />
-              ))}
+              {[1,2,3].map(i => <div key={i} style={{ width: 12, height: 12, borderRadius: '50%', background: '#3A7A52' }} />)}
+              {[4,5].map(i => <div key={i} style={{ width: 12, height: 12, borderRadius: '50%', background: '#E8EDF2', border: '1px solid #C8D4DE' }} />)}
               <span style={{ fontSize: 12, color: '#4A6080', marginLeft: 6 }}>3 / 5</span>
             </div>
           </div>
-
           <div style={{ display: 'flex', gap: 12 }}>
-            <Link href="/explore/kvh-2025-li-0042" style={{
+            <Link href="/explore" style={{
               flex: 1, background: '#1C2E45', color: '#F7F9FB',
               borderRadius: 10, padding: '12px 0', textAlign: 'center',
               textDecoration: 'none', fontWeight: 500, fontSize: 14
-            }}>
-              Invest now →
-            </Link>
-            <Link href="/explore/kvh-2025-li-0042" style={{
-              background: '#F7F9FB', color: '#1C2E45',
-              borderRadius: 10, padding: '12px 20px',
-              textDecoration: 'none', fontSize: 14,
+            }}>Invest now →</Link>
+            <Link href="/explore" style={{
+              background: '#F7F9FB', color: '#1C2E45', borderRadius: 10,
+              padding: '12px 20px', textDecoration: 'none', fontSize: 14,
               border: '0.5px solid #E8EDF2'
-            }}>
-              Details
-            </Link>
+            }}>Details</Link>
           </div>
         </div>
       </section>
 
-      {/* FOOTER */}
       <footer style={{
         background: '#1C2E45', color: '#8AACC8',
         padding: '32px', textAlign: 'center', fontSize: 13, marginTop: 40
       }}>
-        <div style={{ marginBottom: 8 }}>
-          Minereal · Built on Solana · Colosseum Frontier Hackathon 2026
-        </div>
-        <div style={{ fontSize: 11, color: '#4A6080' }}>
-          Devnet only · Not financial advice
-        </div>
+        <div style={{ marginBottom: 8 }}>Minereal · Built on Solana · Colosseum Frontier Hackathon 2026</div>
+        <div style={{ fontSize: 11, color: '#4A6080' }}>Devnet only · Not financial advice</div>
       </footer>
     </main>
   )
