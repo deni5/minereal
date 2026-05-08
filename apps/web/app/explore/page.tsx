@@ -1,8 +1,9 @@
 'use client'
+import { useState } from 'react'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
+import Nav from '@/components/Nav'
 import Link from 'next/link'
-import { useState } from 'react'
 
 export default function ExplorePage() {
   const { publicKey } = useWallet()
@@ -24,14 +25,7 @@ export default function ExplorePage() {
 
   return (
     <main style={{ minHeight: '100vh', background: '#F7F9FB', fontFamily: 'Inter, sans-serif' }}>
-      <nav style={{ background: '#1C2E45', padding: '16px 32px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <Link href="/" style={{ color: '#F7F9FB', fontSize: 20, fontWeight: 700, textDecoration: 'none' }}>⬡ MINEREAL</Link>
-        <div style={{ display: 'flex', gap: 24, alignItems: 'center' }}>
-          <Link href="/explore" style={{ color: '#D4A843', textDecoration: 'none', fontSize: 14, fontWeight: 500 }}>Explore</Link>
-          <Link href="/portfolio" style={{ color: '#E8EDF2', textDecoration: 'none', fontSize: 14 }}>Portfolio</Link>
-          <WalletMultiButton style={{ background: '#2A4060', fontSize: 13 }} />
-        </div>
-      </nav>
+      <Nav active="explore" />
 
       <div style={{ maxWidth: 900, margin: '0 auto', padding: '40px 24px' }}>
         <div style={{ marginBottom: 32 }}>
@@ -117,8 +111,7 @@ export default function ExplorePage() {
                     </div>
                     <input type="range" min={1} max={100} value={amount} onChange={e => setAmount(Number(e.target.value))} style={{ width: '100%', accentColor: '#1C2E45' }} />
                     <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: '#8AACC8', marginTop: 4 }}>
-                      <span>Min: 1 token ($12.50)</span>
-                      <span>Max: 100 ($1,250)</span>
+                      <span>Min: 1 token ($12.50)</span><span>Max: 100 ($1,250)</span>
                     </div>
                   </div>
                   <div style={{ borderTop: '0.5px solid #E8EDF2', paddingTop: 16, marginBottom: 16 }}>
