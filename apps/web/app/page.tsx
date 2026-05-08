@@ -40,7 +40,7 @@ export default function Home() {
 
       {/* HERO */}
       <section style={{
-        background: 'linear-gradient(135deg, #1C2E45 0%, #2A4060 100%)',
+        background: 'linear-gradient(135deg, rgba(28,46,69,0.80) 0%, rgba(42,64,96,0.70) 100%), url(/hero-bg.jpg) center/cover no-repeat',
         padding: '80px 32px', textAlign: 'center', color: '#F7F9FB'
       }}>
         <div style={{
